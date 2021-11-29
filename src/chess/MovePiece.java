@@ -7,7 +7,7 @@ public class MovePiece
 {
     public void move(Graphics g, Image[] imgs, ChessPieces[] CP)
     {
-        boolean valid = true, turn = true;
+        boolean valid = true, turn = true, ruleValid = false;
         //boolean valid to check if user wants to continue the game
         //boolean turn decides who's turn it is
 
@@ -18,6 +18,8 @@ public class MovePiece
         //integer value of location in array
 
         do {
+            ruleValid = false;
+
             pieceName = pieceNameValid(CP);
 
             if (pieceName.isEmpty())
@@ -25,8 +27,12 @@ public class MovePiece
                 break;
             else
             {
-                loc = locationValid(CP);
-                //user input, location to move piece
+                while(!ruleValid)
+                {
+                    loc = locationValid(CP);
+                    //user input, location to move piece
+                    ruleValid = rules(CP, loc, pieceName, turn);
+                }
 
                 for (int i = 0; i < CP.length; i++)
                 {//loop to check user location
@@ -36,10 +42,9 @@ public class MovePiece
                         //location equals index position of user location
                     }
                 }
-                JOptionPane.showMessageDialog(null, rules(CP,loc, pieceName));
+                JOptionPane.showMessageDialog(null, rules(CP,loc, pieceName, turn));
                 for (int y = 0; y < CP.length; y++)
                 {//loop to get user input for piece in index of CP
-                    if(rules(CP,loc, pieceName)) {
                         if (turn) {//turn represents white when true, white piece moves first
                             if (CP[y].getRank().equals(pieceName.toLowerCase()) && (CP[y].getpColor().equals("White"))) {//if user input for piece is valid with CP, and that piece is white
 
@@ -65,7 +70,6 @@ public class MovePiece
                                 //break out of for loop
                             }
                         }
-                    }
                 }//end of second for loop
             }
         }while (valid) ;
@@ -137,11 +141,17 @@ public class MovePiece
         return location;
     }
 
-    public boolean rules(ChessPieces[] CP, String location, String name)
+    public boolean rules(ChessPieces[] CP, String location, String name, boolean color)
     {
         String[] pieceNames = { "pawn", "knight", "bishop", "king", "queen", "rook"};
+        String pieceColor = "";
         boolean pieceValid = false;
         int pieceIndex = 0;
+
+        if(color)
+            pieceColor = "White";
+        else
+            pieceColor = "Black";
 
         for(int i=0; i<pieceNames.length; i++)
         {
@@ -161,7 +171,7 @@ public class MovePiece
                 outerloop:
                 for(int V=0; V<CP.length; V++)
                 {
-                    if(CP[V].getRank().equals(name.toLowerCase()))
+                    if(CP[V].getRank().equals(name.toLowerCase()) && CP[V].getpColor().equals(pieceColor))
                     {
                         int y = CP[V].getY();
                         int nextY = 0;
@@ -183,7 +193,7 @@ public class MovePiece
                 outerloop:
                 for(int v=0; v<CP.length; v++)
                 {
-                    if(name.equals(CP[v].getRank()))
+                    if(CP[v].getRank().equals(name.toLowerCase()) && CP[v].getpColor().equals(pieceColor))
                     {
                         int Y = CP[v].getY();
                         int x = CP[v].getX();
@@ -212,12 +222,12 @@ public class MovePiece
             else if(pieceNames[pieceIndex].equals("knight"))
             {
                 outerloop:
-                for(int i=0; i<CP.length; i++)
+                for(int v=0; v<CP.length; v++)
                 {
-                    if(name.equals(CP[i].getRank()))
+                    if(CP[v].getRank().equals(name.toLowerCase()) && CP[v].getpColor().equals(pieceColor))
                     {
-                        int y = CP[i].getY();
-                        int x = CP[i].getX();
+                        int y = CP[v].getY();
+                        int x = CP[v].getX();
                         int locationX = 0, locationY = 0;
 
                         for(int o=0; o<CP.length; o++)
@@ -228,8 +238,7 @@ public class MovePiece
                                 break;
                             }
 
-                        if((locationX==(x+2)) || (locationX==(x-2)) && (locationY==(y+1) || locationY==(y-1))
-                                || (locationX==(y+2)) || (locationX==(y-2)) && (locationY==(x+1) || locationY==(x-1)))
+                        if((locationX==(x+2)  && (locationY==(y+1) || locationY==(y-1))) || ((locationX==(y+2)) || (locationX==(y-2)) && (locationY==(x+1) || locationY==(x-1))))
                             return true;
                     }
                 }
@@ -238,12 +247,12 @@ public class MovePiece
             else if(pieceNames[pieceIndex].equals("bishop"))
             {
                 outerloop:
-                for(int i=0; i<CP.length; i++)
+                for(int v=0; v<CP.length; v++)
                 {
-                    if(name.equals(CP[i].getRank()))
+                    if(CP[v].getRank().equals(name.toLowerCase())  && CP[v].getpColor().equals(pieceColor))
                     {
-                        int y = CP[i].getY();
-                        int x = CP[i].getX();
+                        int y = CP[v].getY();
+                        int x = CP[v].getX();
                         int locationX = 0, locationY = 0;
 
                         for(int o=0; o<CP.length; o++)
