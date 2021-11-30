@@ -10,68 +10,74 @@ public class MovePiece
         boolean valid = true, turn = true, ruleValid = false;
         //boolean valid to check if user wants to continue the game
         //boolean turn decides who's turn it is
-
+        int location = 0;
+        //integer value of location in array
         String pieceName = "",loc = "";
         //two strings to determine piece to move and location to go to
 
-        int location = 0;
-        //integer value of location in array
 
+
+        outerloop:
         do {
             ruleValid = false;
+            location = 0;
+            pieceName = "";
+            loc = "";
 
-            pieceName = pieceNameValid(CP);
 
-            if (pieceName.isEmpty())
-                //checks if user entered empthy string
-                break;
-            else
-            {
-                while(!ruleValid)
-                {
-                    loc = locationValid(CP);
-                    //user input, location to move piece
+            while(!ruleValid){
+                pieceName = pieceNameValid(CP);
+
+                if (pieceName.isEmpty())//checks if user entered empthy string
+                    break outerloop;
+
+                loc = locationValid(CP);
+                //user input, location to move piece
+
+                if(occupied(loc, CP, turn))
                     ruleValid = rules(CP, loc, pieceName, turn);
-                }
-
-                for (int i = 0; i < CP.length; i++)
-                {//loop to check user location
-                    if (CP[i].getLocation().equals(loc.toUpperCase()))
-                    {//if user location is valid
-                        location = i;
-                        //location equals index position of user location
-                    }
-                }
-                JOptionPane.showMessageDialog(null, rules(CP,loc, pieceName, turn));
-                for (int y = 0; y < CP.length; y++)
-                {//loop to get user input for piece in index of CP
-                        if (turn) {//turn represents white when true, white piece moves first
-                            if (CP[y].getRank().equals(pieceName.toLowerCase()) && (CP[y].getpColor().equals("White"))) {//if user input for piece is valid with CP, and that piece is white
-
-                                ChangePlaces(g, imgs, CP, y, location);
-                                //method for changing pieces on board
-
-                                turn = !turn;
-                                //boolean will equal false
-
-                                break;
-                                //break out of for loop
-                            }
-                        } else {
-                            if (CP[y].getRank().equals(pieceName.toLowerCase()) && (CP[y].getpColor().equals("Black"))) {//if user input for piece is valid with CP, and that piece is black
-
-                                ChangePlaces(g, imgs, CP, y, location);
-                                //method for changing pieces on board
-
-                                turn = !turn;
-                                //boolean will equal true
-
-                                break;
-                                //break out of for loop
-                            }
-                        }
-                }//end of second for loop
             }
+
+            for (int i = 0; i < CP.length; i++)
+            {//loop to check user location
+                if (CP[i].getLocation().equals(loc.toUpperCase()))
+                {//if user location is valid
+                    location = i;
+                    //location equals index position of user location
+                }
+            }
+
+
+
+            for (int y = 0; y < CP.length; y++)
+            {//loop to get user input for piece in index of CP
+                    if (turn) {//turn represents white when true, white piece moves first
+                        if (CP[y].getRank().equals(pieceName.toLowerCase()) && (CP[y].getpColor().equals("White"))) {//if user input for piece is valid with CP, and that piece is white
+
+                            ChangePlaces(g, imgs, CP, y, location);
+                            //method for changing pieces on board
+
+                            turn = !turn;
+                            //boolean will equal false
+
+                            break;
+                            //break out of for loop
+                        }
+                    } else {
+                        if (CP[y].getRank().equals(pieceName.toLowerCase()) && (CP[y].getpColor().equals("Black"))) {//if user input for piece is valid with CP, and that piece is black
+
+                            ChangePlaces(g, imgs, CP, y, location);
+                            //method for changing pieces on board
+
+                            turn = !turn;
+                            //boolean will equal true
+
+                            break;
+                            //break out of for loop
+                        }
+                    }
+            }//end of second for loop
+
         }while (valid) ;
     }
 
@@ -169,21 +175,33 @@ public class MovePiece
             if(pieceNames[pieceIndex].equals("pawn"))
             {
                 outerloop:
-                for(int V=0; V<CP.length; V++)
+                for(int v=0; v<CP.length; v++)
                 {
-                    if(CP[V].getRank().equals(name.toLowerCase()) && CP[V].getpColor().equals(pieceColor))
+                    if(CP[v].getRank().equals(name.toLowerCase()) && CP[v].getpColor().equals(pieceColor))
                     {
-                        int y = CP[V].getY();
+                        int y = CP[v].getY();
+                        int x = CP[v].getX();
+                        int locationX = 0, locationY = 0;
+
                         int nextY = 0;
                         for(int o=0; o<CP.length; o++)
                             if(CP[o].getLocation().equals(location.toUpperCase()))
                             {
-                                nextY=CP[o].getY();
+                                locationY=CP[o].getY();
+                                locationX=CP[o].getX();
                                 break;
                             }
 
-                        if(y+2 == nextY || y-2 == nextY || y+1 == nextY || y-1 == nextY)
+                        if(y+2 == locationY || y-2 == locationY || y+1 == locationY || y-1 == locationY)
+                        {
+                            if(!occupied(location, CP, !color))
+                                break;
+                        }
+
+                        if((y+2 == locationY || y-2 == locationY || y+1 == locationY || y-1 == locationY)
+                                || (y+1 == locationY || y-1 == locationY) && ( x+1 == locationX || x-1 == locationX))
                             return true;
+
                     }
                 }
             }//end of pawn
@@ -195,7 +213,7 @@ public class MovePiece
                 {
                     if(CP[v].getRank().equals(name.toLowerCase()) && CP[v].getpColor().equals(pieceColor))
                     {
-                        int Y = CP[v].getY();
+                        int y = CP[v].getY();
                         int x = CP[v].getX();
                         int locationX = 0, locationY = 0;
 
@@ -203,16 +221,16 @@ public class MovePiece
                             if(CP[o].getLocation().equals(location.toUpperCase()))
                             {
                                 locationY=CP[o].getY();
-                                locationX=CP[o].getY();
+                                locationX=CP[o].getX();
                                 break;
                             }
 
                         for(int u=0; u<8; u++)
                         {
-                            if(locationY==Y && locationX==u)
+                            if(locationY==y && (locationX==u))
                                 return true;
 
-                            if(locationX==x && locationY==u)
+                            if(locationX==x && (locationY==u))
                                 return true;
                         }
                     }
@@ -234,11 +252,12 @@ public class MovePiece
                             if(CP[o].getLocation().equals(location.toUpperCase()))
                             {
                                 locationY=CP[o].getY();
-                                locationX=CP[o].getY();
+                                locationX=CP[o].getX();
                                 break;
                             }
 
-                        if((locationX==(x+2)  && (locationY==(y+1) || locationY==(y-1))) || ((locationX==(y+2)) || (locationX==(y-2)) && (locationY==(x+1) || locationY==(x-1))))
+                        if((locationX==(x+2) || locationX==(x-2))  && (locationY==(y+1) || locationY==(y-1))
+                                || ((locationY==(y-2) || locationY==(y+2)) && (locationX==(x+1) || locationX==(x-1))))
                             return true;
                     }
                 }
@@ -259,23 +278,95 @@ public class MovePiece
                             if(CP[o].getLocation().equals(location.toUpperCase()))
                             {
                                 locationY=CP[o].getY();
-                                locationX=CP[o].getY();
+                                locationX=CP[o].getX();
                                 break;
                             }
 
                         for(int u=0; u<8; u++)
                         {
-                            if(((x+u)==locationX) || ((x-u)==locationX) && ((y+u)==locationY) || ((y-u)==locationY))
+                            if((locationX==(x+u) || locationX==(x-u)) && (locationY==(y-u) || locationY==(y+u)))
                                 return true;
                         }
                     }
                 }
             }//end of bishop
 
+            else if(pieceNames[pieceIndex].equals("queen"))
+            {
+                outerloop:
+                for (int v = 0; v < CP.length; v++) {
+                    if (CP[v].getRank().equals(name.toLowerCase()) && CP[v].getpColor().equals(pieceColor)) {
+                        int y = CP[v].getY();
+                        int x = CP[v].getX();
+                        int locationX = 0, locationY = 0;
+
+                        for (int o = 0; o < CP.length; o++)
+                            if (CP[o].getLocation().equals(location.toUpperCase()))
+                            {
+                                locationY = CP[o].getY();
+                                locationX = CP[o].getX();
+                                break;
+                            }
+
+
+                        for (int u = 0; u < 8; u++) {
+                            if ((locationX == (x + u) || locationX == (x - u)) && (locationY == (y - u) || locationY == (y + u)))
+                                return true;
+
+                            if (locationY == y && (locationX == u))
+                                return true;
+
+                            if (locationX == x && (locationY == u))
+                                return true;
+                        }
+                    }
+                }
+            }//end of queen
+
+            else if(pieceNames[pieceIndex].equals("king"))
+            {
+                for (int v = 0; v < CP.length; v++) {
+                    if (CP[v].getRank().equals(name.toLowerCase()) && CP[v].getpColor().equals(pieceColor)) {
+                        int y = CP[v].getY();
+                        int x = CP[v].getX();
+                        int locationX = 0, locationY = 0;
+
+                        for (int o = 0; o < CP.length; o++)
+                            if (CP[o].getLocation().equals(location.toUpperCase()))
+                            {
+                                locationY = CP[o].getY();
+                                locationX = CP[o].getX();
+                                break;
+                            }
+
+                            if ((locationX==(x+1) || locationX==(x-1) || locationX==x) && (locationY==y || locationY==(y+1) || locationY==(y-1)))
+                                return true;
+                    }
+                }
+            }//end of King
+
         }//end of valid piece
 
+        JOptionPane.showMessageDialog(null, "false");
         return false;
     }
 
+    public boolean occupied(String location, ChessPieces[] CP, boolean turn)
+    {
+        String enemyColor="";
+
+        if(turn)
+            enemyColor = "Black";
+        else
+            enemyColor = "White";
+
+        for(int i=0; i<CP.length; i++)
+            if(CP[i].getLocation().equals(location.toUpperCase()))
+                if(CP[i].getRank().isEmpty() || CP[i].getpColor().equals(enemyColor))
+                    return true;
+
+        JOptionPane.showMessageDialog(null, "Peace Occupied");
+        return false;
+    }
 
 }
