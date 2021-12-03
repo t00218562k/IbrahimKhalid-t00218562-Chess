@@ -14,7 +14,7 @@ public class TestChess
         ChessBoard gg = new ChessBoard();
         //creating object for graphicsG class
 
-        chessframe.setBounds(200,100,816,838);
+        chessframe.setBounds(0,0,880,880);
         //setting the size of the Jframe and where jframe will appear on screen
 
         chessframe.add(gg.getChesspanel());

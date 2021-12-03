@@ -10,9 +10,9 @@ import java.util.Objects;
 
 public class ChessBoard extends JPanel
 {
-    Image imgs[]=new Image[14];
+    Image imgs[]=new Image[30];
     //array for storing images
-    public ChessPieces[] CP = new ChessPieces[64];
+    public static ChessPieces[] CP = new ChessPieces[64];
 
     private JPanel chesspanel = new JPanel()
     {//creating a panel
@@ -53,6 +53,13 @@ public class ChessBoard extends JPanel
                 }
             }
 
+                for(int z=0; z<8; z++) {
+                        //if true square piece will be white
+                        g.drawImage(imgs[14+z], z * 107, 8 * 100, this);
+                        //else if false it will be black
+                        g.drawImage(imgs[22+z], 8 * 100, z * 107, this);
+                }
+
             MovePiece mp = new MovePiece();
 
             mp.move(g, imgs, CP);
@@ -62,12 +69,18 @@ public class ChessBoard extends JPanel
     public void PopulatePieces()
     {
         String[] imageName = {"BlackTile.png", "WhiteTile.png", "BlackBishop.png", "BlackHorse.png", "BlackKing.png", "BlackPawn.png", "BlackQueen.png",
-                              "BlackRook.png", "WhiteBishop.png", "WhiteHorse.png", "WhiteKing.png", "WhitePawn.png", "WhiteQueen.png", "WhiteRook.png"};
+                              "BlackRook.png", "WhiteBishop.png", "WhiteHorse.png", "WhiteKing.png", "WhitePawn.png", "WhiteQueen.png", "WhiteRook.png",
+                              "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "A.png", "B.png", "C.png", "D.png", "E.png",
+                              "F.png", "G.png", "H.png"};
         try
         {
-            for(int x=0; x< imgs.length; x++)
-                imgs[x] = ImageIO.read(new File("ChessPng\\"+imageName[x]))
+            for(int x=0; x< imageName.length; x++)
+                if(x<14)
+                    imgs[x] = ImageIO.read(new File("ChessPng\\"+imageName[x]))
                         .getScaledInstance(100, 100, BufferedImage.SCALE_SMOOTH);
+                else
+                    imgs[x] = ImageIO.read(new File("ChessPng\\"+imageName[x]))
+                            .getScaledInstance(40, 40, BufferedImage.SCALE_SMOOTH);
             //importing image from local hardrive and storing it in the array
         }
         catch (IOException e)
