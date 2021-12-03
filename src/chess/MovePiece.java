@@ -53,6 +53,7 @@ public class MovePiece
                 }
             }
 
+
             for (int y = 0; y < CP.length; y++)
             {//loop to get user input for piece in index of CP
                     if (turn)
