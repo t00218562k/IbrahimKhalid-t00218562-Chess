@@ -14,10 +14,6 @@ public class TestChess
         ChessBoard gg = new ChessBoard();
         //creating object for graphicsG class
 
-        Save gamefile = new Save();
-
-        gamefile.gamesPlayed();
-
         chessframe.setBounds(0,0,880,880);
         //setting the size of the Jframe and where jframe will appear on screen
 

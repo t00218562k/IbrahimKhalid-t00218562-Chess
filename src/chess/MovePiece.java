@@ -18,6 +18,8 @@ public class MovePiece
         String pieceName = "",loc = "";
         //two strings to determine piece to move and location to go to
 
+        JOptionPane.showMessageDialog(null, "Standard chess names\npawn1-pawn8\nrook1-rook2" +
+                "\nbishop1-bishop2\nknight1-knight2\nking\nqueen");
         outerloop:
         do {
             ruleValid = false;
@@ -142,7 +144,7 @@ public class MovePiece
         while(valid)
         {//loop keeps going tell a right name is entered or user enters empthy string
             
-            name = JOptionPane.showInputDialog("Enter Piece name or press enter twice to end game");
+            name = JOptionPane.showInputDialog("Enter Piece name or \n press enter twice to end game");
 
             for(int i=0; i<CP.length; i++)
                 if((CP[i].getRank().equals(name.toLowerCase()) && CP[i].getpColor().equals(pieceColor)) || name.isEmpty())
@@ -166,7 +168,7 @@ public class MovePiece
         outerloop:
         while(valid)
         {//loop keeps going tell a right location is entered or user enters empthy string
-            location = JOptionPane.showInputDialog("Enter Location for " + name);
+            location = JOptionPane.showInputDialog("Enter Location for " + name + " e.g A5");
 
             for(int i=0; i<CP.length; i++)
                 if(CP[i].getLocation().equals(location.toUpperCase()) || name.isEmpty())
