@@ -7,7 +7,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MovePiece
 {
     public void move(Graphics g, Image[] imgs, ChessPieces[] CP)
-    {
+    {//method for moving pieces
+
         boolean valid = true, turn = true, ruleValid = false;
         //boolean valid to check if user wants to continue the game
         //boolean turn decides who's turn it is
@@ -52,8 +53,6 @@ public class MovePiece
                 }
             }
 
-
-
             for (int y = 0; y < CP.length; y++)
             {//loop to get user input for piece in index of CP
                     if (turn)
@@ -87,6 +86,12 @@ public class MovePiece
                         }
                     }
             }//end of for loop
+
+            if(gameOver(CP, turn))
+            {
+                JOptionPane.showMessageDialog(null, "Congrats you WON!!");
+                break outerloop;
+            }
 
         }while (valid) ;
     }
@@ -265,12 +270,12 @@ public class MovePiece
         return false;
     }
 
-    public boolean occupied(String location, ChessPieces[] CP, boolean turn)
+    public boolean occupied(String location, ChessPieces[] CP, boolean color)
     {//method to see if square is occupied by friendly piece, returns true if piece is enemy
 
         String enemyColor="";
 
-        if(turn)
+        if(color)
             enemyColor = "Black";
         else
             enemyColor = "White";
@@ -284,4 +289,24 @@ public class MovePiece
         return false;
     }
 
+    public boolean gameOver(ChessPieces[] CP, boolean color)
+    {
+        int alive = 0;
+
+        String enemyColor="";
+
+        if(color)
+            enemyColor = "Black";
+        else
+            enemyColor = "White";
+
+        for(int i=0; i<CP.length; i++)
+            if(CP[i].getpColor().equals(enemyColor) && CP[i].getRank().equals("king"))
+                alive++;
+
+        if(alive==0)
+            return true;
+
+        return false;
+    }
 }
